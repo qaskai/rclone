@@ -802,10 +802,9 @@ func (o *Object) updateChunks(in0 io.Reader, headers swift.Headers, size int64, 
 		if _, err := in.Peek(1); err != nil {
 			if left > 0 {
 				return "", err // read less than expected
-			} else {
-				fs.Debugf(o, "Uploading segments into %q seems done (%v)", o.fs.segmentsContainer, err)
-				break
 			}
+			fs.Debugf(o, "Uploading segments into %q seems done (%v)", o.fs.segmentsContainer, err)
+			break
 		}
 		n := int64(chunkSize)
 		if size != -1 {
