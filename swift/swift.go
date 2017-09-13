@@ -794,7 +794,7 @@ func (o *Object) updateChunks(in0 io.Reader, headers swift.Headers, size int64, 
 	// Upload the chunks
 	left := size
 	i := 0
-	uniquePrefix := fmt.Sprintf("%s/%d/%d", swift.TimeToFloatString(time.Now()), size, len(o.remote))
+	uniquePrefix := fmt.Sprintf("%s/%d", swift.TimeToFloatString(time.Now()), size)
 	segmentsPath := fmt.Sprintf("%s%s/%s", o.fs.root, o.remote, uniquePrefix)
 	in := bufio.NewReader(in0)
 	for {
