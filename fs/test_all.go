@@ -125,8 +125,8 @@ var (
 		},
 		{
 			Name:     "TestCache:",
-			SubDir:   false,
-			FastList: false,
+			SubDir:   true,
+			FastList: true,
 		},
 	}
 	binary = "fs.test"
