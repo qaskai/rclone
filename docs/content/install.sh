@@ -1,3 +1,12 @@
+#!/bin/sh
+set -e
+
+usage() { echo "Usage: curl https://rclone.org/install.sh | sudo bash [-s beta]" 1>&2; exit 1; }
+
+#check for beta flag
+if [ -n "$1" ] && [ "$1" != "beta" ]; then
+    usage
+fi
 
 #detect the platform
 OS="`uname`"
@@ -45,25 +54,31 @@ case $OS_type in
     ;;
 esac
 
+#create tmp directory and move to it
+tmp_dir=`mktemp -d`; cd $tmp_dir
 
 #download and unzip
+if [ -z "${install_beta}" ]; then
+    download_link="https://downloads.rclone.org/rclone-current-$OS-$OS_type.zip"
+    rclone_zip="rclone-current-$OS-$OS_type.zip"
+    echo "normal installation"
+else
+    download_link="https://beta.rclone.org/rclone-beta-latest-$OS-$OS_type.zip"
+    rclone_zip="rclone-beta-latest-$OS-$OS_type.zip"
+    echo "installing beta"
+fi
 
-cd ~
-download_link="https://downloads.rclone.org/rclone-current-$OS-$OS_type.zip"
 curl -O $download_link
-rclone_zip="rclone-current-$OS-$OS_type.zip"
 unzip_dir="tmp_unzip_dir_for_rclone"
 unzip -a $rclone_zip -d $unzip_dir 
-cd $unzip_dir
-rclone_dir=`ls`
+cd $unzip_dir/*
 
 #mounting rclone to enviroment
 
-cd $rclone_dir
 case $OS in
   'linux')
     #binary
-    mv rclone /usr/bin/
+    cp rclone /usr/bin/
     chmod 755 /usr/bin/rclone
     chown root:root /usr/bin/rclone
     #manuals
@@ -73,7 +88,7 @@ case $OS in
     ;;
   'freebsd'|'openbsd'|'netbsd')
     #bin
-    mv rclone /usr/bin/
+    cp rclone /usr/bin/
     chmod 755 /usr/bin/rclone
     chown root:wheel /usr/bin/rclone
     #man
@@ -84,7 +99,7 @@ case $OS in
   'osx')
     #binary
     mkdir -p /usr/local/bin
-    mv rclone /usr/local/bin/
+    cp rclone /usr/local/bin/
     #manual
     mkdir -p /usr/local/share/man/man1
     cp rclone.1 /usr/local/share/man/man1/    
@@ -94,9 +109,6 @@ case $OS in
     exit 1
 esac
 
-#cleanup
-cd ~
-rm -rf $unzip_dir $rclone_zip
 
 echo
 echo 'Now run "rclone config" for setup. Check https://rclone.org/docs/ for more details.'

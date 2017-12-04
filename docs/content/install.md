@@ -27,7 +27,7 @@ To install rclone on Linux/MacOs/BSD systems, run:
 
 For beta installation, run:
 
-    curl https://rclone.org/install-beta.sh | sudo bash
+    curl https://rclone.org/install.sh | sudo bash -s beta
 
 ## Linux installation from precompiled binary ##
 
