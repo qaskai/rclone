@@ -156,7 +156,6 @@ func NewFilter() (f *Filter, err error) {
 		MaxSize:        int64(maxSize),
 	}
 	addImplicitExclude := false
-	foundExcludeRule := false
 
 	if includeRule != nil {
 		for _, rule := range *includeRule {
@@ -184,7 +183,6 @@ func NewFilter() (f *Filter, err error) {
 			if err != nil {
 				return nil, err
 			}
-			foundExcludeRule = true
 		}
 	}
 	if excludeFrom != nil {
@@ -195,14 +193,8 @@ func NewFilter() (f *Filter, err error) {
 			if err != nil {
 				return nil, err
 			}
-			foundExcludeRule = true
 		}
 	}
-
-	if addImplicitExclude && foundExcludeRule {
-		Infof(nil, "Using --filter is recommended instead of both --include and --exclude as the order they are parsed in is indeterminate")
-	}
-
 	if filterRule != nil {
 		for _, rule := range *filterRule {
 			err = f.AddRule(rule)
